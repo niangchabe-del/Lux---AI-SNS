@@ -1,0 +1,187 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>AI活用済 - 𝑳𝒖𝒙</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+:root{--bg:#09090d;--panel:#111119;--panel2:#171722;--line:#29283a;--text:#f5f3ff;--muted:#9b98ad;--purple:#9a72ff;--purple2:#c2aaff;--danger:#ff7189}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font:15px/1.55 -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+button,input,textarea{font:inherit}button{cursor:pointer;border:0}a{color:var(--purple2)}
+.shell{max-width:1250px;margin:auto;min-height:100vh;display:grid;grid-template-columns:230px minmax(0,1fr) 280px;gap:18px;padding:0 18px}
+.left,.right{position:sticky;top:0;height:100vh;padding:22px 0;overflow:auto}.brand{font-family:Georgia,serif;font-size:30px;letter-spacing:1px;color:#fff;text-shadow:0 0 22px #8c63ff88}.brand small{display:block;font:10px sans-serif;color:var(--muted);letter-spacing:3px;margin-top:-4px}
+.logoMark{color:var(--purple2);margin-right:7px}.nav{display:grid;gap:8px;margin:30px 0}.nav button,.nav a{background:transparent;color:#d8d4e8;text-align:left;padding:12px 14px;border-radius:13px;text-decoration:none}.nav button:hover,.nav a:hover,.nav .active{background:#211b34;color:white}.nav b{display:inline-block;width:26px;color:var(--purple2)}
+.operator{margin-top:25px;padding:14px;border:1px solid var(--line);border-radius:15px;background:linear-gradient(145deg,#171323,#101018)}.operator strong{color:var(--purple2)}
+main{min-width:0;border-left:1px solid var(--line);border-right:1px solid var(--line);min-height:100vh}.top{padding:19px 22px;border-bottom:1px solid var(--line);position:sticky;top:0;background:#09090deF;backdrop-filter:blur(12px);z-index:2}.top h1{font-size:18px;margin:0}.sub{font-size:12px;color:var(--muted)}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:17px;padding:16px;margin:16px}.composer textarea{width:100%;min-height:95px;resize:vertical;background:transparent;color:var(--text);border:0;outline:0}.composerBottom{display:flex;justify-content:space-between;align-items:center;gap:10px;border-top:1px solid var(--line);padding-top:12px}.btn{background:var(--purple);color:#fff;padding:9px 16px;border-radius:999px;font-weight:700}.btn:disabled{opacity:.5;cursor:not-allowed}.btn.secondary{background:#242235;color:#ddd}.btn.danger{background:#49202b}.field{width:100%;background:#0c0c13;color:white;border:1px solid var(--line);border-radius:11px;padding:11px;margin:5px 0 12px;outline:none}.field:focus,textarea:focus{border-color:var(--purple)}
+.post{padding:17px 18px;border-bottom:1px solid var(--line)}.postHead{display:flex;justify-content:space-between;gap:10px}.user{font-weight:700}.handle,.time{color:var(--muted);font-size:12px}.postText{white-space:pre-wrap;overflow-wrap:anywhere;margin:12px 0}.actions{display:flex;gap:18px;color:var(--muted);font-size:13px}.actions button{background:none;color:inherit;padding:3px}.actions button:hover{color:var(--purple2)}
+.right .card{margin:0 0 14px}.right h3{font-size:14px;margin:0 0 12px}.trend{padding:9px 0;border-top:1px solid var(--line);font-size:13px}.trend span{display:block;color:var(--muted);font-size:11px}
+.authWrap{max-width:430px;margin:8vh auto;padding:20px}.authBox{padding:25px;background:var(--panel);border:1px solid var(--line);border-radius:20px}.authBox h1{font-family:Georgia,serif;font-size:35px;margin:0}.authBox p{color:var(--muted)}.hidden{display:none!important}.status{min-height:22px;color:var(--purple2);font-size:13px}.muted{color:var(--muted)}.profileLine{display:flex;align-items:center;gap:12px}.avatar{width:40px;height:40px;border-radius:50%;display:grid;place-items:center;background:linear-gradient(135deg,#6742b6,#241d3e);font-weight:800}
+.dmRow{padding:12px;border-bottom:1px solid var(--line)}.msg{padding:10px 13px;border-radius:14px;background:#211d30;max-width:85%;margin:8px 0;white-space:pre-wrap;overflow-wrap:anywhere}.msg.mine{margin-left:auto;background:#493477}.read{font-size:10px;color:var(--purple2);text-align:right}
+footer{padding:18px;text-align:center;color:var(--muted);font-size:11px}
+@media(max-width:900px){.shell{grid-template-columns:190px minmax(0,1fr)}.right{display:none}}
+@media(max-width:620px){.shell{display:block;padding:0}main{border:0;padding-bottom:68px}.left{height:auto;position:sticky;top:0;z-index:4;background:#09090df2;padding:10px 14px;border-bottom:1px solid var(--line)}.brand{font-size:23px}.brand small{display:none}.nav{display:flex;gap:4px;margin:9px 0 0;overflow-x:auto}.nav button{white-space:nowrap;padding:8px 11px;font-size:12px}.nav b{width:auto;margin-right:4px}.operator{display:none}.top{padding:15px}.card{margin:12px}.post{padding:15px}.authWrap{margin:3vh auto}.authBox{margin:12px}}
+</style>
+</head>
+<body>
+<section id="auth" class="authWrap">
+ <div class="authBox">
+  <div class="brand"><span class="logoMark">♛</span>𝑳𝒖𝒙<small>AI UTILIZED SOCIAL NETWORK</small></div>
+  <h2 id="authTitle">ログイン</h2>
+  <p>IDとパスワードで𝑳𝒖𝒙へ。</p>
+  <label class="sub">ユーザーID</label><input id="authUser" class="field" maxlength="20" autocomplete="username" placeholder="半角英数字・_（3〜20文字）">
+  <label class="sub">パスワード</label><input id="authPass" class="field" type="password" autocomplete="current-password" placeholder="8文字以上">
+  <button class="btn" id="authSubmit" style="width:100%">ログイン</button>
+  <p><button class="btn secondary" id="switchAuth">新規登録はこちら</button></p>
+  <div class="status" id="authStatus"></div>
+  <p class="sub">※メールアドレス登録は不要。パスワードは認証サービス側で管理されます。</p>
+ </div>
+</section>
+
+<div id="app" class="shell hidden">
+ <aside class="left">
+  <div class="brand"><span class="logoMark">♛</span>𝑳𝒖𝒙<small>AI UTILIZED SOCIAL NETWORK</small></div>
+  <nav class="nav">
+   <button class="active" data-page="home"><b>⌂</b>ホーム</button>
+   <button data-page="search"><b>⌕</b>ユーザー検索</button>
+   <button data-page="dm"><b>✉</b>DM</button>
+   <button data-page="profile"><b>♙</b>マイページ</button>
+   <button data-page="operator"><b>♜</b>運営部屋</button>
+  </nav>
+  <div class="operator"><strong>𝑳𝒖𝒙 運営部屋</strong><p class="sub">お知らせ・不具合報告・機能要望はこちら。</p><button class="btn secondary" data-go="operator">開く</button></div>
+  <button class="btn secondary" id="logout">ログアウト</button>
+ </aside>
+ <main>
+  <div class="top"><h1 id="pageTitle">ホーム</h1><div class="sub">投稿は作成から24時間で消えます。DMは保存されます。</div></div>
+  <section id="page-home">
+   <div class="card composer"><textarea id="postText" maxlength="1000" placeholder="今、何してる？"></textarea><div class="composerBottom"><span class="sub">最大1,000文字 / 24時間で自動削除</span><button class="btn" id="sendPost">投稿する</button></div><div class="status" id="postStatus"></div></div>
+   <div id="feed"></div>
+  </section>
+  <section id="page-search" class="hidden"><div class="card"><h3>ユーザー検索</h3><input id="searchUser" class="field" placeholder="ユーザーIDを入力"><button id="searchBtn" class="btn">検索</button><div id="searchResults"></div></div></section>
+  <section id="page-dm" class="hidden"><div class="card"><h3>メッセージ</h3><label class="sub">相手のユーザーID</label><input id="dmUser" class="field" placeholder="相手のID"><button id="openDm" class="btn secondary">会話を開く</button><div id="dmStatus" class="status"></div><div id="messages"></div><div id="dmComposer" class="hidden"><textarea id="dmText" class="field" placeholder="メッセージ" maxlength="2000"></textarea><button id="sendDm" class="btn">送信</button></div></div></section>
+  <section id="page-profile" class="hidden"><div class="card" id="myProfile"></div><div id="myPosts"></div></section>
+  <section id="page-operator" class="hidden"><div class="card"><h2>♜ 𝑳𝒖𝒙 運営部屋</h2><p>運営 - そーしろー。</p><p>お知らせ・メンテナンス情報・不具合報告・追加機能の要望を受け付けます。</p><p>お問い合わせ：<a href="mailto:niangchabe@gmail.com">niangchabe@gmail.com</a></p><p class="sub">全てAI活用させてます。</p></div></section>
+  <footer>全てAI活用させてます。 · 運営 - そーしろー。</footer>
+ </main>
+ <aside class="right">
+  <div class="card"><h3>✦ トレンド</h3><div class="trend">#𝑳𝒖𝒙へようこそ<span>注目の話題</span></div><div class="trend">#今日のひとこと<span>みんなの投稿</span></div><div class="trend">#運営からのお知らせ<span>公式情報</span></div></div>
+  <div class="card"><h3>♙ おすすめユーザー</h3><p class="sub">ユーザー検索から知り合いを探せます。</p><button class="btn secondary" data-go="search">検索する</button></div>
+  <div class="card"><h3>▣ 人気の部屋</h3><p class="sub">運営部屋</p><button class="btn secondary" data-go="operator">入室</button></div>
+ </aside>
+</div>
+<script>
+(() => {
+ const SUPABASE_URL = "https://vvgylnszspvxpaiwjnhl.supabase.co";
+ const SUPABASE_ANON_KEY = "sb_publishable_-SR_AwyEjudyV9dxHfllyQ_SmbKejmC";
+ const $ = id => document.getElementById(id);
+ let sb, user, myProfile, currentDmUser, signupMode = false;
+ const ready = () => SUPABASE_URL.startsWith("https://") && !SUPABASE_URL.includes("YOUR_") && SUPABASE_ANON_KEY.length > 30 && !SUPABASE_ANON_KEY.includes("YOUR_");
+ const status = (id,msg) => $(id).textContent = msg || "";
+ const esc = s => String(s ?? "").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+ const pseudoEmail = name => `${name.toLowerCase()}@lux.invalid`;
+ async function init(){
+  if(!ready()){status("authStatus","先に index.html の Supabase URL と公開キーを設定してください。");return;}
+  sb = window.supabase.createClient(SUPABASE_URL,SUPABASE_ANON_KEY);
+  const {data:{session}} = await sb.auth.getSession();
+  if(session) await enter(session.user);
+ }
+ async function enter(authUser){
+  user=authUser;
+  const {data,error}=await sb.from("profiles").select("*").eq("id",user.id).single();
+  if(error){status("authStatus","プロフィール取得失敗："+error.message);return;}
+  myProfile=data;
+  $("auth").classList.add("hidden");$("app").classList.remove("hidden");
+  await showPage("home");
+ }
+ $("switchAuth").onclick=()=>{signupMode=!signupMode;$("authTitle").textContent=signupMode?"新規登録":"ログイン";$("authSubmit").textContent=signupMode?"IDを作成":"ログイン";$("switchAuth").textContent=signupMode?"ログインはこちら":"新規登録はこちら";$("authPass").autocomplete=signupMode?"new-password":"current-password";};
+ $("authSubmit").onclick=async()=>{
+  if(!sb){if(!ready()){status("authStatus","Supabaseの接続情報がまだ設定されていません。");return;}sb=window.supabase.createClient(SUPABASE_URL,SUPABASE_ANON_KEY);}
+  const name=$("authUser").value.trim(), pass=$("authPass").value;
+  if(!/^[a-zA-Z0-9_]{3,20}$/.test(name)){status("authStatus","IDは半角英数字と_で3〜20文字にしてください。");return;}
+  if(pass.length<8){status("authStatus","パスワードは8文字以上にしてください。");return;}
+  status("authStatus","処理中…");
+  let result;
+  if(signupMode) result=await sb.auth.signUp({email:pseudoEmail(name),password:pass,options:{data:{username:name}}});
+  else result=await sb.auth.signInWithPassword({email:pseudoEmail(name),password:pass});
+  if(result.error){status("authStatus",result.error.message);return;}
+  if(signupMode && !result.data.session){status("authStatus","登録確認が必要な設定です。Supabaseでメール確認をOFFにしてください。");return;}
+  if(result.data.user) await enter(result.data.user);
+ };
+ $("logout").onclick=async()=>{await sb.auth.signOut();location.reload();};
+ document.querySelectorAll("[data-page]").forEach(b=>b.onclick=()=>showPage(b.dataset.page));
+ document.querySelectorAll("[data-go]").forEach(b=>b.onclick=()=>showPage(b.dataset.go));
+ async function showPage(page){
+  ["home","search","dm","profile","operator"].forEach(p=>$("page-"+p).classList.toggle("hidden",p!==page));
+  document.querySelectorAll("[data-page]").forEach(b=>b.classList.toggle("active",b.dataset.page===page));
+  $("pageTitle").textContent=({home:"ホーム",search:"ユーザー検索",dm:"DM",profile:"マイページ",operator:"運営部屋"})[page];
+  if(page==="home")loadFeed();if(page==="profile")loadProfile();
+ }
+ $("sendPost").onclick=async()=>{
+  const content=$("postText").value.trim();if(!content)return;
+  $("sendPost").disabled=true;status("postStatus","投稿中…");
+  const {error}=await sb.from("posts").insert({user_id:user.id,content});
+  $("sendPost").disabled=false;
+  if(error){status("postStatus","投稿できません："+error.message);return;}
+  $("postText").value="";status("postStatus","投稿しました。");loadFeed();
+ };
+ async function loadFeed(){
+  const {data,error}=await sb.from("posts").select("id,user_id,content,created_at,profiles(username,display_name)").gt("expires_at",new Date().toISOString()).order("created_at",{ascending:false}).limit(60);
+  if(error){$("feed").innerHTML=`<div class="card">読み込み失敗：${esc(error.message)}</div>`;return;}
+  if(!data.length){$("feed").innerHTML='<div class="card muted">まだ投稿がありません。最初の投稿をしてみよう。</div>';return;}
+  const ids=data.map(p=>p.id);
+  const {data:likes}=await sb.from("likes").select("post_id,user_id").in("post_id",ids);
+  $("feed").innerHTML=data.map(p=>{
+   const mine=(likes||[]).some(l=>l.post_id===p.id&&l.user_id===user.id), count=(likes||[]).filter(l=>l.post_id===p.id).length;
+   return `<article class="post"><div class="postHead"><div><span class="user">${esc(p.profiles?.display_name||p.profiles?.username||"ユーザー")}</span> <span class="handle">@${esc(p.profiles?.username||"")}</span></div><span class="time">${new Date(p.created_at).toLocaleString("ja-JP")}</span></div><div class="postText">${esc(p.content)}</div><div class="actions"><button data-like="${p.id}" data-liked="${mine}">${mine?"♥":"♡"} ${count}</button><button data-reply="${p.id}">返信</button></div><div id="reply-${p.id}"></div></article>`;
+  }).join("");
+  document.querySelectorAll("[data-like]").forEach(b=>b.onclick=()=>toggleLike(b.dataset.like,b.dataset.liked==="true"));
+  document.querySelectorAll("[data-reply]").forEach(b=>b.onclick=()=>replyBox(b.dataset.reply));
+ }
+ async function toggleLike(id,liked){
+  const q=liked?sb.from("likes").delete().eq("post_id",id).eq("user_id",user.id):sb.from("likes").insert({post_id:id,user_id:user.id});
+  const {error}=await q;if(error)alert(error.message);loadFeed();
+ }
+ async function replyBox(id){
+  const holder=$("reply-"+id);holder.innerHTML=`<textarea class="field" id="replyText-${id}" maxlength="500" placeholder="返信を書く"></textarea><button class="btn" id="replySend-${id}">返信</button>`;
+  $("replySend-"+id).onclick=async()=>{const content=$("replyText-"+id).value.trim();if(!content)return;const {error}=await sb.from("replies").insert({post_id:id,user_id:user.id,content});if(error)alert(error.message);else{holder.textContent="返信しました。";}};
+ }
+ $("searchBtn").onclick=async()=>{
+  const q=$("searchUser").value.trim();if(!q)return;
+  const {data,error}=await sb.from("profiles").select("id,username,display_name,bio").ilike("username",`%${q}%`).limit(20);
+  $("searchResults").innerHTML=error?esc(error.message):(data||[]).map(p=>`<div class="dmRow"><b>${esc(p.display_name||p.username)}</b> <span class="handle">@${esc(p.username)}</span><p>${esc(p.bio||"")}</p><button class="btn secondary" data-follow="${p.id}">フォロー</button></div>`).join("")||"見つかりませんでした。";
+  document.querySelectorAll("[data-follow]").forEach(b=>b.onclick=async()=>{const {error}=await sb.from("follows").upsert({follower_id:user.id,following_id:b.dataset.follow},{onConflict:"follower_id,following_id"});if(error)alert(error.message);else b.textContent="フォロー済み";});
+ };
+ $("openDm").onclick=async()=>{
+  const name=$("dmUser").value.trim();if(!name)return;
+  const {data,error}=await sb.from("profiles").select("*").eq("username",name).single();
+  if(error||!data){status("dmStatus","ユーザーが見つかりません。");return;}
+  if(data.id===user.id){status("dmStatus","自分自身には送れません。");return;}
+  currentDmUser=data;status("dmStatus","@"+data.username+" との会話");
+  $("dmComposer").classList.remove("hidden");loadMessages();
+ };
+ async function loadMessages(){
+  if(!currentDmUser)return;
+  const {data,error}=await sb.from("messages").select("*").or(`and(sender_id.eq.${user.id},recipient_id.eq.${currentDmUser.id}),and(sender_id.eq.${currentDmUser.id},recipient_id.eq.${user.id})`).order("created_at",{ascending:true}).limit(100);
+  if(error){$("messages").textContent=error.message;return;}
+  const unread=(data||[]).filter(m=>m.recipient_id===user.id&&!m.read_at).map(m=>m.id);
+  if(unread.length)await sb.from("messages").update({read_at:new Date().toISOString()}).in("id",unread);
+  $("messages").innerHTML=(data||[]).map(m=>`<div class="msg ${m.sender_id===user.id?"mine":""}">${esc(m.content)}${m.sender_id===user.id?`<div class="read">${m.read_at?"既読":"送信済み"}</div>`:""}</div>`).join("");
+ }
+ $("sendDm").onclick=async()=>{
+  const content=$("dmText").value.trim();if(!content||!currentDmUser)return;
+  const {error}=await sb.from("messages").insert({sender_id:user.id,recipient_id:currentDmUser.id,content});
+  if(error){status("dmStatus",error.message);return;}
+  $("dmText").value="";loadMessages();
+ };
+ async function loadProfile(){
+  const {data:posts}=await sb.from("posts").select("*").eq("user_id",user.id).gt("expires_at",new Date().toISOString()).order("created_at",{ascending:false});
+  $("myProfile").innerHTML=`<div class="profileLine"><div class="avatar">${esc((myProfile.display_name||myProfile.username||"L")[0])}</div><div><b>${esc(myProfile.display_name||myProfile.username)}</b><div class="handle">@${esc(myProfile.username)}</div></div></div><p>${esc(myProfile.bio||"プロフィール文はまだありません。")}</p>`;
+  $("myPosts").innerHTML=(posts||[]).map(p=>`<article class="post"><div class="postText">${esc(p.content)}</div><span class="time">${new Date(p.created_at).toLocaleString("ja-JP")}</span></article>`).join("")||'<div class="card muted">投稿はまだありません。</div>';
+ }
+ init();
+ setInterval(()=>{if(user&&currentDmUser&&!$("page-dm").classList.contains("hidden"))loadMessages();},7000);
+})();
+</script>
+</body>
+</html>
